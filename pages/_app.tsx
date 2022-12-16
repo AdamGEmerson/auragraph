@@ -2,7 +2,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import {ActionIcon, AppShell, Group, Header, MantineProvider, Navbar, Title} from '@mantine/core';
 import {MainLinks} from "../components/_MainLinks";
-import {IconGauge, IconGraph} from "@tabler/icons";
+import {IconCirclesRelation, IconGauge, IconGraph} from "@tabler/icons";
 import React, {useState} from "react";
 import { NotificationsProvider } from "@mantine/notifications";
 import { Overpass } from '@next/font/google'
@@ -17,7 +17,7 @@ const overpass = Overpass({
 })
 
 export default function App(props: AppProps) {
-  const { Component, pageProps } = props;
+    const { Component, pageProps } = props;
     const [supabaseClient] = useState(() => createBrowserSupabaseClient())
 
   function NavbarContent() {
@@ -34,10 +34,10 @@ export default function App(props: AppProps) {
     return (
         <Header height={60} p="xs">
           <Group>
-            <ActionIcon color='green' variant='light' size='xl' radius='xl'>
-              <IconGraph/>
+            <ActionIcon variant='gradient' size='xl' radius='xl'>
+              <IconCirclesRelation/>
             </ActionIcon>
-            <Title color='teal' sx={{fontFamily: overpass.style.fontFamily}}>Spotigragh</Title>
+            <Title color={"light"} order={1} sx={{fontFamily: overpass.style.fontFamily}}>auragraph</Title>
           </Group>
         </Header>
     );
@@ -59,7 +59,12 @@ export default function App(props: AppProps) {
                 /** Put your mantine theme override here */
                 colorScheme: 'dark',
                 fontFamily: overpass.style.fontFamily,
-                primaryColor: 'green'
+                primaryColor: 'green',
+                defaultGradient: {
+                    from: 'teal',
+                    to: 'green',
+                    deg: 340,
+                },
             }}
         >
           <NotificationsProvider>

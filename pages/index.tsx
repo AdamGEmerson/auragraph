@@ -1,19 +1,17 @@
 import getConfig from "next/config"
-import {Box, Button, Title, Text, Center, Group, Container, Card, SimpleGrid, Paper, Badge} from "@mantine/core"
-import {createRef, useEffect, useRef, useState} from "react";
-import {Overpass} from "@next/font/google";
-import {IconBrandSpotify, IconLogin, IconLogout} from "@tabler/icons";
-import {SupabaseClient, User, UserResponse} from '@supabase/supabase-js'
+import { Title, Text, Center, Group, SimpleGrid, Paper, Badge,
+    Divider, useMantineTheme, ActionIcon, HoverCard } from "@mantine/core"
+import { useEffect, useState } from "react";
+import { Overpass } from "@next/font/google";
+import { IconEye, IconEyeOff, IconInfoCircle } from "@tabler/icons";
+import { User } from '@supabase/supabase-js'
 import SingleArtistResponse = SpotifyApi.SingleArtistResponse;
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import {createServerSupabaseClient} from "@supabase/auth-helpers-nextjs";
+import { GetServerSideProps } from "next";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import SpotifyWebApi from "spotify-web-api-node";
-import Image from "next/image";
-import musicIllustration from '../public/undraw_music.svg';
-import {useSupabaseClient} from "@supabase/auth-helpers-react";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 import ArtistCard from "../components/ArtistCard";
-import * as venn from "@upsetjs/venn.js";
-import * as d3 from 'd3';
+import EulerChart from "../components/EulerChart";
 
 type Data = {
     artist?: SingleArtistResponse;
@@ -39,19 +37,75 @@ type Artist = {
     genres: string[],
 }
 
-export const getServerSideProps: GetServerSideProps<{ user: User | null }> = async (context) =>  {
-    const {serverRuntimeConfig, clientRuntimeConfig} = getConfig();
+export const getServerSideProps: GetServerSideProps<{ user: User | null }> = async (context) => {
+    const { serverRuntimeConfig } = getConfig();
     const supabase = createServerSupabaseClient(context);
-    const user = null
+
+    async function fetchAndBuildTopArtists(spotifyApi: SpotifyWebApi) {
+        const response = await spotifyApi.getMyTopArtists();
+        const payload = JSON.parse(JSON.stringify(response.body));
+        const artists: Artist[] = payload.items;
+        let dataSet = await buildGenreSetsVennJS(artists)
+        dataSet = dataSet.sort((a, b) => a.size - b.size)
+        const genres: { genre: string; enabled: boolean }[] = [];
+        let count = 0;
+        dataSet.forEach(item => {
+            if (item.sets.length == 1) {
+                genres.push({genre: item.sets[0], enabled: count < 5 })
+                count ++;
+            }
+        })
+        return {response, dataSet, genres}
+    }
+
+    async function buildGenreSetsVennJS(artists: Artist[]) {
+        let genres: Set<string> = new Set();
+        let newDataSet: { size: number, sets: string[] }[] = [];
+
+        // Create a set of unique genres
+        artists.forEach(artist => {
+            artist.genres.forEach(genre => {
+                // Stringify to avoid duplicates
+                genres.add(JSON.stringify([genre]));
+                artist.genres.forEach(g2 => {
+                    if (g2 != genre)
+                        genres.add(JSON.stringify([genre, g2]))
+                    //artist.genres.forEach(g3 => genres.add(JSON.stringify([genre, g2, g3])))
+                })
+            })
+        })
+        // Rebuild into proper array with parse
+        let genreArray: string[][] = [];
+        genres.forEach(genre => {
+            genreArray.push(JSON.parse(genre))
+        })
+
+        //console.log(genreArray);
+        // Add unique genres to dataset with their correct counts
+        genreArray.forEach(genre => {
+            newDataSet.push({
+                size: artists.filter(artist => genre.every(val => artist.genres.includes(val))).length * 100,
+                sets: genre
+            })
+        })
+
+        //console.log(newDataSet);
+
+        newDataSet = newDataSet.filter(item => (item.sets.length > 0 && item.size > 100));
+        console.log(newDataSet);
+        return newDataSet;
+    }
+
     // Check if we have a session
     const {
-        data: { session },
+        data: {session},
     } = await supabase.auth.getSession()
 
     if (session) {
+        console.log("Session Found")
         const {provider_token, provider_refresh_token, user} = session
 
-        if ( provider_token && provider_refresh_token ) {
+        if (provider_token && provider_refresh_token) {
 
             console.log("Access token found, attempting to fetch Top Artists...")
 
@@ -66,8 +120,9 @@ export const getServerSideProps: GetServerSideProps<{ user: User | null }> = asy
             console.log(`The access token is: ${spotifyApi.getAccessToken()}`)
 
             try {
-                const response = await spotifyApi.getMyTopArtists();
-                return { props: { user, response } }
+                // Get top artists data from spotify API and parse it into the desired formats
+                const {response, dataSet, genres} = await fetchAndBuildTopArtists(spotifyApi);
+                return {props: {user, response, dataSet, genres}}
             } catch (e) {
                 // Attempt to refresh and save the access token.
                 await spotifyApi.refreshAccessToken();
@@ -76,19 +131,33 @@ export const getServerSideProps: GetServerSideProps<{ user: User | null }> = asy
                 await supabase.auth.setSession(session);
 
                 // Try getting top artists again
-                const response = await spotifyApi.getMyTopArtists();
-                return { props: { user, response } }
+                const {response, dataSet, genres} = await fetchAndBuildTopArtists(spotifyApi);
+                return {props: {user, response, dataSet, genres}}
+            }
+        } else {
+            console.log("No provider token")
+            return {
+                redirect: {destination: '/login', permanent: false},
             }
         }
     }
-
-    return { props: { user } }
-
+    return {
+        redirect: {
+            destination: '/login',
+            permanent: false,
+        },
+    }
 }
 
-export default function Home( { user, response }:{ user: User | null; response: Response | null }  ) {
+export default function Home( { user, response, dataSet, genres }:{
+    user: User;
+    response: Response;
+    dataSet: { size:number, sets:string[] }[];
+    genres: { genre: string; enabled: boolean }[]}  ) {
+    const [genresEnabled, setGenresEnabled] = useState(genres);
+    const [currentDataSet, setCurrentDataset] = useState(dataSet);
     const supabaseClient = useSupabaseClient()
-
+    const theme = useMantineTheme();
     async function signInWithSpotify() {
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'spotify',
@@ -98,80 +167,125 @@ export default function Home( { user, response }:{ user: User | null; response: 
         })
     }
 
-    async function buildGenreSets(artists: Artist[]) {
-        let singleGenres:Set<string> = new Set();
-        let genres:{ sets:string[], size:number }[] = [];
+    useEffect(() => {
+        updateDataSet()
+    }, []);
 
-        artists.forEach(artist => {
-            // Push the intersections
-            genres.push( {sets: artist.genres, size: 1} );
-
-            // Build our set of genres
-            artist.genres.forEach(genre => {
-                singleGenres.add(genre);
-            })
-        })
-
-        singleGenres.forEach(genre => {
-            let count = 0;
-            artists.forEach(artist => {
-                if (artist.genres.includes(genre)) {
-                    count ++;
-                }
-            })
-            genres.push( {sets: [genre], size: count} );
-        })
-
-        console.log(JSON.stringify(genres, null, 2))
-        const chart = venn.VennDiagram();
-        // @ts-ignore
-        d3.select('#venn').datum(genres).call(chart);
+    function toggleGenre(genre: string) {
+        console.log(`Toggling: ${genre}`)
+        const tempGenres = genresEnabled;
+        const i = tempGenres.findIndex(item => item.genre == genre);
+        tempGenres[i].enabled = !tempGenres[i].enabled;
+        setGenresEnabled(tempGenres);
+        updateDataSet();
     }
 
-    if ( user && response ) {
-
-        if (response.body) {
-            const payload = JSON.parse(JSON.stringify(response.body));
-            const artists:Artist[] = payload.items;
-
-            return (
-                <>
-                    <Title order={2}>Welcome, {user.user_metadata.name}!</Title>
-                    <Title order={4} color={"dimmed"} my={'md'}>Your top artists</Title>
-                    <SimpleGrid cols={3}>
-                        {artists.map(artist => (
-                            <ArtistCard key={artist.id} artist={artist} />
-                        ))}
-                    </SimpleGrid>
-                    <Button onClick={() => buildGenreSets(artists)}>Get Chart</Button>
-                    <div id="venn"></div>
-                </>
-            );
-        }
-
-
+    function getCurrentDataSet() {
+        return currentDataSet
     }
-    if ( user )
-        return (
-            <>
-                <Text>{`user: ${user.email}`}</Text>
-                <Text> Could not fetch top artists.</Text>
-            </>
-        );
+
+    function updateDataSet() {
+        const disabledGenres = genresEnabled.filter(genre => (!genre.enabled));
+        console.log(JSON.stringify(disabledGenres, null, 2))
+        // Filter out items with a disabled genre
+        const updatedDataSet = dataSet.filter(isGenreEnabled)
+        setCurrentDataset(updatedDataSet)
+        console.log(currentDataSet)
+    }
+
+    function isGenreEnabled(item: {size: number, sets: string[]}) {
+        const disabledGenres = genresEnabled.filter(genre => (!genre.enabled));
+        let genreEnabled = true;
+        disabledGenres.forEach(genre => {
+            if (item.sets.includes(genre.genre)) {
+                console.log(`Found a hit on ${genre} and set ${item.sets}`)
+                genreEnabled = false;
+            }
+        })
+        return genreEnabled;
+    }
+
+
+    const payload = JSON.parse(JSON.stringify(response.body));
+    const artists:Artist[] = payload.items;
 
     return (
-        <Center style={{height: 600}}>
-            <Container size={"md"}>
-                <Group>
-                    <Image src={musicIllustration} alt={"Music Illustration"} width={300} height={300}/>
+        <>
+            <Title sx={{fontFamily: overpass.style.fontFamily}} order={1}>{user.user_metadata.name}</Title>
+            <Paper p={'md'} my={'md'} sx={(theme) => ({
+                    backgroundColor: theme.colors.dark[8]
+            })}>
+                <Group mb={'md'}>
+                    <Title sx={{fontFamily: overpass.style.fontFamily}} color={'teal'} order={1}> Your Sound Graph </Title>
+                    <HoverCard width={360} shadow="md">
+                        <HoverCard.Target>
+                            <ActionIcon size={'lg'} color={'green'} variant={"subtle"} radius={'xl'} sx={{'&:hover': { cursor: 'default'}}}>
+                                <IconInfoCircle />
+                            </ActionIcon>
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown>
+                            <Title order={4}>About auragraphs</Title>
+                            <Text size="sm" mt={'xs'}>
+                                Sound graphs are our attempt to visualize the relationship between your favorite artists and their music.
+                            </Text>
+                            <Text size="sm" mt={'xs'}>
+                               This sound graph is an analysis of your top 20 artists and their genres (according to spotify).
+                            </Text>
+
+                            <Text size="sm" mt={'xs'}>
+                                Click the genre buttons above the graph to explore!
+                            </Text>
+                        </HoverCard.Dropdown>
+                    </HoverCard>
+
                 </Group>
-                <Group>
-                    <Title order={3} color={'dimmed'}>Sign in to spotify to get started...</Title>
+                <Text sx={{fontFamily: overpass.style.fontFamily}} color={'dimmed'} mb={'xs'}> Toggle your genres to explore the chart </Text>
+                <Group spacing={"xs"} sx={{width: "80%"}} mb={'md'}>
+                {genresEnabled ? genresEnabled.map(genre => (
+                        <Badge key={genre.genre}
+                               leftSection={<Center>{genre.enabled ? <IconEye size={12}/> : <IconEyeOff size={12}/>}</Center>}
+                               color={genre.enabled ? 'green' : 'dark'}
+                               radius={'xl'}
+                               sx={(theme) => ({
+                                   cursor: "pointer",
+                                   '&:hover': {
+                                       backgroundColor: theme.colors.green[2],
+                                       color: theme.colors.dark[3]
+                                   }
+                                })}
+                               onClick={() => toggleGenre(genre.genre)}>{genre.genre}</Badge>
+                    ))
+                    : ''}
                 </Group>
-                <Group position={'center'}>
-                    <Button size={'lg'} radius={'lg'} my={'md'} leftIcon={<IconBrandSpotify />} onClick={() => signInWithSpotify()}>Sign In</Button>
-                </Group>
-            </Container>
-        </Center>
-    )
+                { currentDataSet ? <EulerChart data={currentDataSet}/> : ''}
+            </Paper>
+            <Divider my={"md"}></Divider>
+            <Title sx={{fontFamily: overpass.style.fontFamily}} color={'teal'} order={1}> Genres </Title>
+
+            <Divider my={"md"}></Divider>
+            <Title sx={{fontFamily: overpass.style.fontFamily}} color={'teal'} order={1}> Your Top Artists </Title>
+            <Title sx={{fontFamily: overpass.style.fontFamily}} color={'dimmed'} order={4}> According to Spotify </Title>
+            <SimpleGrid cols={3}>
+                {artists.map(artist => (
+                    <ArtistCard key={artist.id} artist={artist} />
+                ))}
+            </SimpleGrid>
+        </>
+    );
+
+    // return (
+    //     <Center style={{height: 600}}>
+    //         <Container size={"md"}>
+    //             <Group>
+    //                 <Image src={musicIllustration} alt={"Music Illustration"} width={300} height={300}/>
+    //             </Group>
+    //             <Group>
+    //                 <Title order={3} color={'dimmed'}>Sign in to spotify to get started...</Title>
+    //             </Group>
+    //             <Group position={'center'}>
+    //                 <Button size={'lg'} radius={'lg'} my={'md'} leftIcon={<IconBrandSpotify />} onClick={() => signInWithSpotify()}>Sign In</Button>
+    //             </Group>
+    //         </Container>
+    //     </Center>
+    // )
 }
