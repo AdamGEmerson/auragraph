@@ -15,7 +15,7 @@ function EulerChart( { data }:{ data: { size:number, sets:string[] }[]} ) {
     ]
     // console.log(JSON.stringify(data, null, 2))
     const ref = useD3(
-        (div) => {
+        (div:any) => {
             const height = 600;
             const width = 800;
             const margin = {top: 20, right: 30, bottom: 30, left: 40};
