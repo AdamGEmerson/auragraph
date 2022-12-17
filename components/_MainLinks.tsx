@@ -1,4 +1,4 @@
-import {IconHome, IconLogin, IconUser} from '@tabler/icons';
+import {IconCirclesRelation, IconCompass, IconHome, IconLogin, IconQuestionMark, IconUser} from '@tabler/icons';
 import { ThemeIcon, UnstyledButton, Group, Text } from '@mantine/core';
 import React from "react";
 import Link from 'next/link';
@@ -46,8 +46,10 @@ function MainLink({ icon, color, label, page}: MainLinkProps) {
 }
 
 const data = [
-    { icon: <IconHome size={18} />, color: 'green', label: 'Home', page: '' },
-    { icon: <IconUser size={18} />, color: 'green', label: 'Profile', page: 'login' }
+    { icon: <IconHome size={18} />, color: 'green', label: 'Home', page: 'home' },
+    { icon: <IconCirclesRelation size={18} />, color: 'green', label: 'Your Auragraph', page: 'auragraph' },
+    { icon: <IconCompass size={18} />, color: 'green', label: 'Explore', page: 'explore' },
+    { icon: <IconQuestionMark size={18} />, color: 'green', label: 'About', page: 'about' }
 ];
 
 export function MainLinks() {

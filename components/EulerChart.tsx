@@ -3,7 +3,6 @@ import {useD3} from "../hooks/useD3";
 import {VennDiagram, sortAreas} from "@upsetjs/venn.js";
 import {Container, Loader, Box, Paper, Center, Group} from "@mantine/core";
 import * as d3 from 'd3';
-import {random} from "nanoid";
 
 
 function EulerChart( { data }:{ data: { size:number, sets:string[] }[]} ) {
@@ -67,9 +66,12 @@ function EulerChart( { data }:{ data: { size:number, sets:string[] }[]} ) {
         <Paper
             id={"venn"}
             radius={"xl"}
+            withBorder
             sx={(theme) => ({
                 height: 600,
-                marginTop: "12px"
+                marginTop: "12px",
+                backgroundColor: theme.fn.rgba(theme.colors.dark[4], 0.35),
+                backdropFilter: "blur( 2px )",
             })}
         >
             <Center>
