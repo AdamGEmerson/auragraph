@@ -15,7 +15,7 @@ function SignInOutButton() {
             provider: 'spotify',
             options: {
                 scopes: 'playlist-read-private user-read-private user-top-read',
-                redirectTo: 'http://localhost:3000/home'
+                redirectTo: '/home'
             }
         })
     }
