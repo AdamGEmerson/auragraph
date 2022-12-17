@@ -2,12 +2,14 @@ import React from 'react';
 import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
 import {Group, Text, ThemeIcon, UnstyledButton} from "@mantine/core";
 import {IconLogin, IconLogout} from "@tabler/icons";
+import {useRouter} from "next/router";
 
 function SignInOutButton() {
     const supabaseClient = useSupabaseClient();
-
-    function signOut() {
-        supabaseClient.auth.signOut();
+    const router = useRouter();
+    async function signOut() {
+        await supabaseClient.auth.signOut();
+        await router.push(`${window.location.origin}/`)
     }
 
     async function signIn() {
@@ -15,7 +17,7 @@ function SignInOutButton() {
             provider: 'spotify',
             options: {
                 scopes: 'playlist-read-private user-read-private user-top-read',
-                redirectTo: '/home'
+                redirectTo: `${window.location.origin}/home`
             }
         })
     }

@@ -137,13 +137,13 @@ export const getServerSideProps: GetServerSideProps<{ user: User | null }> = asy
         } else {
             console.log("No provider token")
             return {
-                redirect: { destination: '/', permanent: false},
+                redirect: { destination: `${window.location.origin}/`, permanent: false},
             }
         }
     }
     return {
         redirect: {
-            destination: '/',
+            destination: `${window.location.origin}/`,
             permanent: false,
         },
     }

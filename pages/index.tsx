@@ -42,7 +42,7 @@ const LoginPage = () => {
             provider: 'spotify',
             options: {
                 scopes: 'playlist-read-private user-read-private user-top-read',
-                redirectTo: '/home',
+                redirectTo: `${window.location.origin}/home`,
             }
         })
     }
