@@ -12,9 +12,9 @@ import { GetServerSideProps } from "next";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import SpotifyWebApi from "spotify-web-api-node";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import ArtistCard from "../../components/ArtistCard";
-import EulerChart from "../../components/EulerChart";
-import topographyBackground from "../../public/topography.svg";
+import ArtistCard from "../components/ArtistCard";
+import EulerChart from "../components/EulerChart";
+import topographyBackground from "../public/topography.svg";
 import {useInputState} from "@mantine/hooks";
 
 type Data = {
@@ -34,6 +34,7 @@ type Artist = {
     images: ArtistImage[],
     popularity: number,
     genres: string[],
+    external_urls: {spotify: string}
 }
 
 export default function Explore( ) {
@@ -43,7 +44,7 @@ export default function Explore( ) {
     const [artists, setArtists] = useState<Artist[]>([]);
     const [firstInput, setFirstInput] = useState(false);
     const [typingTimer, setTypingTimer] = useState<any>();
-    let timer = 1000;
+    let timer = 800;
 
     useEffect(() => {
         if (firstInput) {

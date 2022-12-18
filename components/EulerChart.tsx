@@ -45,18 +45,19 @@ function EulerChart( { data }:{ data: { size:number, sets:string[] }[] } ) {
                 })
 
                 d3.selectAll(".venn-area").transition();
-                    // .on("mouseover", function(d, i) {
-                    //     let node = d3.select(this).transition();
-                    //     node.select("path").style("fill-opacity", .5);
-                    //     node.select("text").style("font-weight", "100")
-                    //         .style("font-size", "24px");
-                    // })
-                    // .on("mouseout", function(d, i) {
-                    //     let node = d3.select(this).transition();
-                    //     node.select("path").style("fill-opacity", .3);
-                    //     node.select("text").style("font-weight", "100")
-                    //         .style("font-size", "16px");
-                    // });
+                d3.selectAll(".venn-circle")
+                    .on("mouseover", function(d, i) {
+                        let node = d3.select(this).transition();
+                        node.select("path").style("fill-opacity", .5);
+                        node.select("text").style("font-weight", "100")
+                            .style("font-size", "24px");
+                    })
+                    .on("mouseout", function(d, i) {
+                        let node = d3.select(this).transition();
+                        node.select("path").style("fill-opacity", .3);
+                        node.select("text").style("font-weight", "100")
+                            .style("font-size", "16px");
+                    });
 
                 setLoading(false);
             } catch {}

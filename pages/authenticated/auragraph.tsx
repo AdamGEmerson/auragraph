@@ -5,7 +5,14 @@ import {
 } from "@mantine/core"
 import React, { useEffect, useState } from "react";
 import { Overpass } from "@next/font/google";
-import {IconCirclesRelation, IconEye, IconEyeOff, IconInfoCircle, IconQuestionMark} from "@tabler/icons";
+import {
+    IconBrandSpotify,
+    IconCirclesRelation,
+    IconEye,
+    IconEyeOff,
+    IconInfoCircle,
+    IconQuestionMark
+} from "@tabler/icons";
 import {createClient, User} from '@supabase/supabase-js'
 import SingleArtistResponse = SpotifyApi.SingleArtistResponse;
 import {GetServerSideProps, GetServerSidePropsContext} from "next";
@@ -16,6 +23,7 @@ import ArtistCard from "../../components/ArtistCard";
 import EulerChart from "../../components/EulerChart";
 import topographyBackground from "../../public/topography.svg";
 import {Database, Json} from "../../types/supabase";
+import {useMediaQuery} from "@mantine/hooks";
 
 type Data = {
     artist?: SingleArtistResponse;
@@ -39,6 +47,7 @@ type Artist = {
     images: ArtistImage[],
     popularity: number,
     genres: string[],
+    external_urls: {spotify: string}
 }
 
 export const getServerSideProps = async ( context : GetServerSidePropsContext ) => {
@@ -132,6 +141,8 @@ export default function Auragraph( { preload, auraData, artists, user }:{
     const [genres, setGenres] = useState<{genre: string, enabled: boolean}[]>([]);
     const [currentDataSet, setCurrentDataset] = useState<{size: number, sets: string[]}[]>();
     const theme = useMantineTheme();
+    const smallScreen = useMediaQuery(`(min-width: ${theme.breakpoints.sm.toString()}px)`);
+    const mediumScreen = useMediaQuery(`(min-width: ${theme.breakpoints.md.toString()}px)`);
     let artistArray: Artist[];
 
     // Start by fetching the top artists from spotify
@@ -275,6 +286,10 @@ export default function Auragraph( { preload, auraData, artists, user }:{
         setCurrentDataset(updatedDataSet)
     }
 
+    function toggleAll(genres: { genre: string; enabled: boolean }[]) {
+        genres.forEach(genre => toggleGenre(genre.genre));
+    }
+
     function isGenreEnabled(item: {size: number, sets: string[]}) {
         const disabledGenres = genres.filter(genre => (!genre.enabled));
         let genreEnabled = true;
@@ -295,33 +310,38 @@ export default function Auragraph( { preload, auraData, artists, user }:{
                 <Group>
                     <ThemeIcon size={64} variant={'light'} radius={'xl'} color='teal'><IconCirclesRelation
                         size={48}/></ThemeIcon>
-                    <Title order={1} variant={'gradient'}>Your Auragraph</Title>
-                    <HoverCard width={360} shadow="md">
-                        <HoverCard.Target>
-                            <ActionIcon size={'lg'} color={'green'} variant={"subtle"} radius={'xl'}
-                                        sx={{'&:hover': {cursor: 'default'}}}>
-                                <IconInfoCircle/>
-                            </ActionIcon>
-                        </HoverCard.Target>
-                        <HoverCard.Dropdown>
-                            <Title order={4}>About Auragraphs</Title>
-                            <Text size="sm" mt={'xs'}>
-                                Auragraphs are an attempt to visualize the relationship between your favorite artists
-                                and their music.
-                            </Text>
-                            <Text size="sm" mt={'xs'}>
-                                Your auragraph is a mapping of your top 20 artists and their genres (according to
-                                spotify).
-                            </Text>
+                    <Stack spacing={'xs'}>
+                        <Group>
+                            <Title order={mediumScreen ? 1 : 2} variant={'gradient'}>Your Auragraph</Title>
+                            <HoverCard width={360} shadow="md">
+                                <HoverCard.Target>
+                                    <ActionIcon size={'lg'} color={'green'} variant={"subtle"} radius={'xl'}
+                                                sx={{'&:hover': {cursor: 'default'}}}>
+                                        <IconInfoCircle/>
+                                    </ActionIcon>
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown>
+                                    <Title order={4}>About Auragraphs</Title>
+                                    <Text size="sm" mt={'xs'}>
+                                        Auragraphs are an attempt to visualize the relationship between your favorite artists
+                                        and their music.
+                                    </Text>
+                                    <Text size="sm" mt={'xs'}>
+                                        Your auragraph is a mapping of your top 20 artists and their genres (according to
+                                        spotify).
+                                    </Text>
 
-                            <Text size="sm" mt={'xs'}>
-                                Click the genre buttons above the graph to explore!
-                            </Text>
-                        </HoverCard.Dropdown>
-                    </HoverCard>
+                                    <Text size="sm" mt={'xs'}>
+                                        Click the genre buttons above the graph to explore!
+                                    </Text>
+                                </HoverCard.Dropdown>
+                            </HoverCard>
+                        </Group>
+                        <Text weight={700} size={'xl'} mx={"md"}>{user.user_metadata.name}</Text>
+                    </Stack>
                 </Group>
-                <Text weight={700} size={'xl'} mx={"md"} mb={"md"}>Powered by Spotify</Text>
-                <Text weight={700} size={'xl'} mx={"md"}>{user.user_metadata.name}</Text>
+
+
                 <Paper p={'md'} my={'md'} sx={(theme) => ({
                     backgroundColor: "transparent",
                 })}>
@@ -334,7 +354,7 @@ export default function Auragraph( { preload, auraData, artists, user }:{
                                            <IconEyeOff size={18}/>}</Center>}
                                        color={genre.enabled ? 'green' : 'dark'}
                                        radius={'xl'}
-                                       size={'lg'}
+                                       size={mediumScreen ? 'lg' : 'sm'}
                                        sx={(theme) => ({
                                            cursor: "pointer",
                                            '&:hover': {
@@ -345,16 +365,29 @@ export default function Auragraph( { preload, auraData, artists, user }:{
                                        onClick={() => toggleGenre(genre.genre)}>{genre.genre}</Badge>
                             ))
                             : ''}
+                            <Badge
+                                color='cyan'
+                                radius={'xl'}
+                                size={mediumScreen ? 'lg' : 'sm'}
+                                sx={(theme) => ({
+                                    cursor: "pointer",
+                                    '&:hover': {
+                                        backgroundColor: theme.colors.cyan[2],
+                                        color: theme.colors.dark[3]
+                                    }
+                                })}
+                                onClick={() => toggleAll(genres)}>Toggle All</Badge>
                     </Group>
                     {currentDataSet ? <EulerChart data={currentDataSet}/> : ''}
                 </Paper>
+                <Text weight={700} size={'md'} mx={"md"} mb={"md"}>Powered by Spotify</Text>
                 <Divider my={"md"}></Divider>
-                <Title sx={{fontFamily: overpass.style.fontFamily}} color={'teal'} order={2}>Your Artists</Title>
+                <Title sx={{fontFamily: overpass.style.fontFamily}} order={2}>Your Artists</Title>
                 <Text sx={{fontFamily: overpass.style.fontFamily}} color={'dimmed'} mb={'md'}>The artists that makeup
                     your auragraph</Text>
                 <SimpleGrid cols={3} breakpoints={[
                     {maxWidth: 2000, cols: 2, spacing: 'sm'},
-                    {maxWidth: 1500, cols: 1, spacing: 'sm'},
+                    {maxWidth: 1000, cols: 1, spacing: 'sm'},
                 ]}>
                     {topArtists ? topArtists.items.map(artist => (
                         <ArtistCard key={artist.id} artist={artist} genres={genres}/>

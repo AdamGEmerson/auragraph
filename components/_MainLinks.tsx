@@ -8,11 +8,15 @@ interface MainLinkProps {
     color: string;
     label: string;
     page: string;
+    setOpenBurger: any;
 }
 
-function MainLink({ icon, color, label, page}: MainLinkProps) {
+function MainLink({ icon, color, label, page, setOpenBurger}: MainLinkProps) {
 
     function loadPage( page:string ) {
+        setTimeout(() => {
+            setOpenBurger(false)
+        }, 200)
 
     }
 
@@ -46,13 +50,13 @@ function MainLink({ icon, color, label, page}: MainLinkProps) {
 }
 
 const data = [
-    { icon: <IconHome size={18} />, color: 'green', label: 'Home', page: 'authenticated/home' },
+    { icon: <IconHome size={18} />, color: 'green', label: 'Home', page: 'home' },
     { icon: <IconCirclesRelation size={18} />, color: 'green', label: 'Your Auragraph', page: 'authenticated/auragraph' },
-    { icon: <IconCompass size={18} />, color: 'green', label: 'Explore', page: 'authenticated/explore' },
+    { icon: <IconCompass size={18} />, color: 'green', label: 'Explore', page: 'explore' },
     { icon: <IconQuestionMark size={18} />, color: 'green', label: 'About', page: 'about' }
 ];
 
-export function MainLinks() {
-    const links = data.map((link) => <MainLink {...link} key={link.label} />);
+export function MainLinks( { setOpenBurger }: { setOpenBurger: any} ) {
+    const links = data.map((link) => <MainLink {...link} setOpenBurger={setOpenBurger} key={link.label} />);
     return <div>{links}</div>;
 }

@@ -13,11 +13,11 @@ import {
     Box,
     BackgroundImage,
     Overlay,
-    Tooltip, useMantineTheme
+    Tooltip, useMantineTheme, Grid, Center
 } from "@mantine/core";
 import {string} from "prop-types";
-import {IconMicrophone} from "@tabler/icons";
-import {useHover} from "@mantine/hooks";
+import {IconBrandSpotify, IconCirclesRelation, IconMicrophone} from "@tabler/icons";
+import {useHover, useMediaQuery} from "@mantine/hooks";
 import {Router} from "next/router";
 
 type ArtistImage = {
@@ -32,11 +32,13 @@ type Artist = {
     images: ArtistImage[],
     popularity: number,
     genres: string[],
+    external_urls: { spotify: string },
 }
 
 function ArtistCard( { artist, genres }: { artist: Artist; genres: {genre: string, enabled: boolean}[] } ) {
     const { hovered, ref } = useHover();
     const theme = useMantineTheme();
+    const smallScreen = useMediaQuery(`(min-width: ${theme.breakpoints.sm.toString()}px)`);
     function isGenreEnabled(genre: string) {
         const enabledGenres = genres.filter(genre => genre.enabled);
         let genreEnabled = false;
@@ -61,33 +63,39 @@ function ArtistCard( { artist, genres }: { artist: Artist; genres: {genre: strin
               component="a"
               href={`artists/${artist.id}`}
               sx={(theme) => ({
-                  height: "120px",
-                  backgroundColor: theme.fn.rgba(theme.colors.dark[4], 0.35),
-                  backdropFilter: "blur( 2px )",
+                  backgroundColor: theme.fn.rgba(theme.colors.dark[7], 0.65),
+                  //backdropFilter: "blur( 2px )",
                   '&:hover': {
-                      color: theme.colors.teal[6],
-                      boxShadow: `0 8px 32px 0 ${theme.fn.rgba(theme.colors.teal[9], 0.25)}`,
+                      boxShadow: `0 8px 32px 0 ${theme.fn.rgba(theme.colors.cyan[9], 0.25)}`,
                       cursor: 'pointer'
                   }
               })}
               withBorder>
-            <Group>
-                <Avatar
-                    size={"xl"}
-                    radius={"xl"}
-                    src={artist.images[0] ? artist.images[0].url : ''}
-                />
-                <Stack>
-                    <Title order={3}>{artist.name}</Title>
-                    <Group position={"left"}>
-                        {artist.genres.filter(isGenreEnabled).slice(0,3).map(genre => (
-                            <Tooltip color={theme.colors.dark[3]} key={genre} label={genre} sx={{textTransform: 'capitalize'}}>
-                                <Badge size={'lg'} sx={{width: '140px'}}> {genre} </Badge>
-                            </Tooltip>
-                        ))}
-                    </Group>
-                </Stack>
-            </Group>
+                <Grid>
+                    <Grid.Col span={smallScreen ? 'auto' : 12}>
+                        <Stack>
+                            <Group>
+                                <Avatar
+                                    size={'md'}
+                                    radius={"xl"}
+                                    src={artist.images[0] ? artist.images[0].url : ''}
+                                />
+                                <Title order={3}>{artist.name}</Title>
+                            </Group>
+                            <Group position={"left"}>
+                                {artist.genres.filter(isGenreEnabled).slice(0,3).map(genre => (
+                                    <Tooltip color={theme.colors.dark[3]} key={genre} label={genre} sx={{textTransform: 'capitalize'}}>
+                                        <Badge size={smallScreen ? 'md' : 'sm'} > {genre} </Badge>
+                                    </Tooltip>
+                                ))}
+                            </Group>
+                            <Group>
+                                <Button component={'a'} href={`artists/${artist.id}`} color={'cyan'} variant={'light'} compact radius={'lg'} leftIcon={<IconCirclesRelation size={18}/>}>Artist Page</Button>
+                                <Button component={'a'} href={artist.external_urls.spotify} color={'green'} variant={'light'} compact radius={'lg'} leftIcon={<IconBrandSpotify size={18}/>}>Spotify</Button>
+                            </Group>
+                        </Stack>
+                    </Grid.Col>
+                </Grid>
             {/*</BackgroundImage>*/}
         </Card>
     );

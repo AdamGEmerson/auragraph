@@ -5,7 +5,7 @@ import getConfig from "next/config";
 import {createServerSupabaseClient} from "@supabase/auth-helpers-nextjs";
 import SpotifyWebApi from "spotify-web-api-node";
 import {
-    ActionIcon, Avatar, Badge, Button, Center,
+    ActionIcon, Avatar, Badge, Button, Center, Container,
     Group, HoverCard, Paper,
     Stack,
     Text,
@@ -21,30 +21,52 @@ export const getServerSideProps = async (context : GetServerSidePropsContext ) =
     const artistID = context.params?.artistID;
 
     // Check if we have a session
-    const {
-        data: {session},
-    } = await supabase.auth.getSession()
+    // const {
+    //     data: {session},
+    // } = await supabase.auth.getSession()
+    //
+    // if (session) {
+    //     console.log("Session Found")
+    //     const {provider_token, provider_refresh_token, user} = session
+    //
+    //     let spotifyApi = new SpotifyWebApi({
+    //         clientId: serverRuntimeConfig.clientId,
+    //         clientSecret: serverRuntimeConfig.clientSecret,
+    //     });
+    //
+    //     if (provider_token && provider_refresh_token && artistID) {
+    //         await spotifyApi.setAccessToken(provider_token);
+    //         await spotifyApi.setRefreshToken(provider_refresh_token);
+    //         if (typeof artistID === "string") {
+    //             const artistData = await spotifyApi.getArtist(artistID);
+    //             const artistTopSongs = await spotifyApi.getArtistTopTracks(artistID, "US");
+    //             return { props: { artistData, artistTopSongs } }
+    //         }
+    //     }
+    // }
 
-    if (session) {
-        console.log("Session Found")
-        const {provider_token, provider_refresh_token, user} = session
+    let spotifyApi = new SpotifyWebApi({
+        clientId: serverRuntimeConfig.clientId,
+        clientSecret: serverRuntimeConfig.clientSecret,
+    });
 
-        let spotifyApi = new SpotifyWebApi({
-            clientId: serverRuntimeConfig.clientId,
-            clientSecret: serverRuntimeConfig.clientSecret,
-        });
+    const auth = await spotifyApi.clientCredentialsGrant();
+    // Save the access token so that it's used in future calls
+    console.log(auth)
+    spotifyApi.setAccessToken(auth.body['access_token']);
 
-        if (provider_token && provider_refresh_token && artistID) {
-            await spotifyApi.setAccessToken(provider_token);
-            await spotifyApi.setRefreshToken(provider_refresh_token);
-            if (typeof artistID === "string") {
-                const artistData = await spotifyApi.getArtist(artistID);
-                const artistTopSongs = await spotifyApi.getArtistTopTracks(artistID, "US");
-                return { props: { artistData, artistTopSongs } }
-            }
+    if (typeof artistID === "string") {
+        try {
+            const artistData = await spotifyApi.getArtist(artistID);
+            const artistTopSongs = await spotifyApi.getArtistTopTracks(artistID, "US");
+            return { props: { artistData, artistTopSongs } }
+        } catch (e) {
+            // Attempt to refresh and save the access token.
+            return { props: { artistData: null, artistTopSongs: null } }
         }
     }
-    return { props: { artistData: null, artistTopSongs: null } }
+
+    // return { props: { artistData: null, artistTopSongs: null } }
 }
 
 
@@ -106,6 +128,7 @@ const ArtistPage = ( { artistData, artistTopSongs }:{artistData: Response; artis
         <Paper
             id={"venn"}
             radius={"xl"}
+            p={'xl'}
             withBorder
             sx={(theme) => ({
                 height: 600,
@@ -114,8 +137,10 @@ const ArtistPage = ( { artistData, artistTopSongs }:{artistData: Response; artis
                 backdropFilter: "blur( 2px )",
             })}
         >
-            <Center>
-                <Title order={3}>Artist Auragraphs coming soon</Title>
+            <Center py={'xl'}>
+                <Container my={'xl'}>
+                    <Title order={3} color={'dimmed'}>Artist Auragraphs coming soon!</Title>
+                </Container>
             </Center>
         </Paper>
     </>

@@ -41,7 +41,7 @@ export default function App(props: AppProps) {
         return (
             <Navbar p="xs" width={{  sm: 200, lg: 300  }} hiddenBreakpoint={"sm"} hidden={!opened}>
                 <Navbar.Section>{/* Header with logo */}</Navbar.Section>
-                <Navbar.Section grow mt="md"> <MainLinks /> </Navbar.Section>
+                <Navbar.Section grow mt="md"> <MainLinks setOpenBurger={setOpened}/> </Navbar.Section>
                 <Divider />
                 <Navbar.Section py={'10px'}>
                     <SignInOutButton/>

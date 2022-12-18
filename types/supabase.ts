@@ -9,6 +9,29 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      "Access Requests": {
+        Row: {
+          id: number
+          created_at: string | null
+          f_name: string
+          l_name: string
+          email: string
+        }
+        Insert: {
+          id?: number
+          created_at?: string | null
+          f_name: string
+          l_name: string
+          email: string
+        }
+        Update: {
+          id?: number
+          created_at?: string | null
+          f_name?: string
+          l_name?: string
+          email?: string
+        }
+      }
       Auragraph: {
         Row: {
           id: string
@@ -16,6 +39,7 @@ export interface Database {
           last_updated: string
           aura_data: Json
           top_artists: Json
+          genres: Json
         }
         Insert: {
           id: string
@@ -23,6 +47,7 @@ export interface Database {
           last_updated?: string
           aura_data: Json
           top_artists: Json
+          genres: Json
         }
         Update: {
           id?: string
@@ -30,6 +55,7 @@ export interface Database {
           last_updated?: string
           aura_data?: Json
           top_artists?: Json
+          genres?: Json
         }
       }
       Authentication: {

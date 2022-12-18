@@ -29,6 +29,11 @@
 > - If you turn the central genres off, your graph will become disjoint!.
 > - Some genres will be represented as complete subsets of others. "Art Pop" and "Hyper Pop" for example. 
 
+### What's Next?
+>I intend to finish graphs for Artists themselves, that users can view when using the explore feature, but the methodology will have to be different due to the fact that spotify only assigns genres to artists, not to songs or albums.
+> 
+>I would also like to push the data visualizaion a bit further, with some more informative tooltips and additional ways to express a users aural proclivities.
+
 ### Screenshots
 
 ![Home Page](/readmeImages/homePage.png)
@@ -48,9 +53,13 @@ Artist
 
 
 ### Supabase Integration
->Auragraph leverages the **Supabase Auth** Spotify provider to connect with spotify and authenticate users.
+>**Supabase Auth** 
+> 
+>Auragraph leverages the Auth Supabase Spotify provider to connect with spotify and authenticate users. Protected routes are managed by next.js middleware as outlined in the Supabase docs. Spotify API calls are made using the `provider_token` retrieved from the user session.
 >
->Once a graph has been generated, the data is stored using **Supabase Database**. This allows us to reduce load times and api calls after the first visit. The graph is loaded from the database with SSR, and if that fails, API calls are made client side.
+> **Supabase Database**
+> 
+>Once a graph has been generated, the data is stored using Supabase Database. This allows us to reduce load times and api calls after the first visit. The graph is loaded from the database with SSR, and if that fails, API calls are made client side.
 > 
 >Due to the Spotify Developer restriction requiring that I manually approve users before they can authenticate with OAuth I have also set up a "request access" contact form which is being stored in a Supabase table as well.
 >
@@ -64,7 +73,7 @@ Database
 
 
 ### Thanks
- Thanks to all the devs who contributed to these amazing open source packages: 
+ Thank you to the devs who contributed to these amazing open source packages: 
  - [Supabase](https://supabase.com) 
  - [Next.js](https://nextjs.org/) 
  - [Mantine](https://mantine.dev)
