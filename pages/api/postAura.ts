@@ -3,20 +3,21 @@ import {createClient, PostgrestResponse} from "@supabase/supabase-js";
 import getConfig from "next/config";
 import {Database, Json,} from "../../types/supabase";
 
-
 export default async function handler( req: NextApiRequest, res: NextApiResponse ) {
     const { publicRuntimeConfig } = await getConfig();
     const payload = JSON.parse(req.body)
     const userID = payload.id;
     console.log(userID)
     const aura:Json = payload.aura;
+    const topArtists:Json = payload.topArtists;
+    const genres:Json = payload.genres;
     console.log(`Request ${userID}`);
     const supabase = await createClient<Database>(
         publicRuntimeConfig.databaseApiUrl,
         publicRuntimeConfig.databasePublicAnon
     );
 
-    let dbResponse = await supabase.from('Auragraph').upsert({id: userID, aura_data: aura, last_updated: new Date().toISOString() });
+    let dbResponse = await supabase.from('Auragraph').upsert({id: userID, aura_data: aura, top_artists: topArtists, genres: genres, last_updated: new Date().toISOString() });
 
     console.log(JSON.stringify( dbResponse ));
 

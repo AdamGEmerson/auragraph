@@ -55,7 +55,17 @@ export default function Explore( ) {
     function autoSearch() {
         console.log("Searching!");
         setLoading(true);
-        // TODO: Call spotify api search endpoint and get results, then set loading to false.
+        // Get top artists
+        fetch(`/api/find/${searchText}`, {method: 'GET'}).then((res) => {
+            if (res.ok) {
+                res.json().then(data => {
+                    setArtists(data.artists.items);
+                    setLoading(false);
+                })
+            } else {
+                console.log("Request failed")
+            }
+        })
     }
 
     function updateSearchText(text: string) {
@@ -69,7 +79,7 @@ export default function Explore( ) {
         <>
             <Group>
                 <ThemeIcon size={64} variant={'light'} radius={'xl'} color={'cyan'}><IconCompass size={48}/></ThemeIcon>
-                <Title order={1} color={theme.fn.rgba(theme.colors.cyan[7], .8)} my={"md"}>Explore</Title>
+                <Title order={1} variant={'gradient'} gradient={{from: theme.colors.cyan[5], to:theme.colors.yellow[3], deg:10}} my={"md"}>Explore</Title>
             </Group>
             <Paper p={'md'} my={'md'} sx={(theme) => ({
                 backgroundColor: "transparent"
@@ -81,12 +91,13 @@ export default function Explore( ) {
                 <TextInput
                     autoFocus={true}
                     size={'xl'}
+                    color={'cyan'}
                     radius={'lg'}
                     placeholder={"Magdalena Bay"}
                     value={searchText}
                     onChange={(e) => updateSearchText(e.target.value)}
                     icon={loading ? <Loader size={"xs"}/> : <IconSearch size={24}/>}/>
-            <SimpleGrid cols={3} breakpoints={[
+            <SimpleGrid cols={3} my={'md'} breakpoints={[
                 { maxWidth: 2000, cols: 2, spacing: 'sm' },
                 { maxWidth: 1500, cols: 1, spacing: 'sm' },
             ]}>

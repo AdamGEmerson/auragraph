@@ -57,9 +57,9 @@ function HomeLink({ icon, label, color, description, page}: HomeLinkProps) {
 
 const data = (theme: MantineTheme) => {
     return [
-        { icon: <ThemeIcon size={64} variant={'light'} radius={'xl'} color={'green'}><IconCirclesRelation size={48}/></ThemeIcon>, color: theme.colors.teal[6] ,label: 'Your Auragraph', description: "Visualize your music tastes and share your auragraph with friends.", page: 'auragraph' },
-        { icon: <ThemeIcon size={64} variant={'light'} radius={'xl'} color={'cyan'}><IconCompass size={48}/></ThemeIcon>, label: 'Explore', color: theme.colors.cyan[6], description: "Explore Spotify and find your favorite artists' auragraphs.", page: 'explore' },
-        { icon: <ThemeIcon size={64} variant={'light'} radius={'xl'} color={'yellow'}><IconQuestionMark size={48}/></ThemeIcon>, label: 'About', color: theme.colors.yellow[6], description: "Learn more about what an auragraph is and how it works.", page: 'explore' },
+        { icon: <ThemeIcon size={64} variant={'light'} radius={'xl'} color={'green'}><IconCirclesRelation size={48}/></ThemeIcon>, color: theme.colors.teal[6] ,label: 'Your Auragraph', description: "Visualize your music tastes and share your auragraph with friends.", page: 'authenticated/auragraph' },
+        { icon: <ThemeIcon size={64} variant={'light'} radius={'xl'} color={'cyan'}><IconCompass size={48}/></ThemeIcon>, label: 'Explore', color: theme.colors.cyan[6], description: "Explore Spotify and find your favorite artists' auragraphs.", page: 'authenticated/explore' },
+        { icon: <ThemeIcon size={64} variant={'light'} radius={'xl'} color={'yellow'}><IconQuestionMark size={48}/></ThemeIcon>, label: 'About', color: theme.colors.yellow[6], description: "Learn more about what an auragraph is and how it works.", page: 'about' },
     ]
 };
 

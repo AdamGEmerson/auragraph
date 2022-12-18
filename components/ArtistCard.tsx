@@ -1,5 +1,20 @@
 import React from 'react';
-import {Badge, Card, Container, Group, Paper, Stack, Title, Button, Image, Avatar, Box, BackgroundImage, Overlay} from "@mantine/core";
+import {
+    Badge,
+    Card,
+    Container,
+    Group,
+    Paper,
+    Stack,
+    Title,
+    Button,
+    Image,
+    Avatar,
+    Box,
+    BackgroundImage,
+    Overlay,
+    Tooltip, useMantineTheme
+} from "@mantine/core";
 import {string} from "prop-types";
 import {IconMicrophone} from "@tabler/icons";
 import {useHover} from "@mantine/hooks";
@@ -21,7 +36,7 @@ type Artist = {
 
 function ArtistCard( { artist, genres }: { artist: Artist; genres: {genre: string, enabled: boolean}[] } ) {
     const { hovered, ref } = useHover();
-
+    const theme = useMantineTheme();
     function isGenreEnabled(genre: string) {
         const enabledGenres = genres.filter(genre => genre.enabled);
         let genreEnabled = false;
@@ -60,13 +75,15 @@ function ArtistCard( { artist, genres }: { artist: Artist; genres: {genre: strin
                 <Avatar
                     size={"xl"}
                     radius={"xl"}
-                    src={artist.images[0].url}
+                    src={artist.images[0] ? artist.images[0].url : ''}
                 />
                 <Stack>
                     <Title order={3}>{artist.name}</Title>
                     <Group position={"left"}>
                         {artist.genres.filter(isGenreEnabled).slice(0,3).map(genre => (
-                            <Badge key={genre} size={'lg'}> {genre} </Badge>
+                            <Tooltip color={theme.colors.dark[3]} key={genre} label={genre} sx={{textTransform: 'capitalize'}}>
+                                <Badge size={'lg'} sx={{width: '140px'}}> {genre} </Badge>
+                            </Tooltip>
                         ))}
                     </Group>
                 </Stack>

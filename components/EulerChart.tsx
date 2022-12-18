@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import {useUser} from "@supabase/auth-helpers-react";
 
 
-function EulerChart( { data, user }:{ data: { size:number, sets:string[] }[], user: string} ) {
+function EulerChart( { data }:{ data: { size:number, sets:string[] }[] } ) {
     const [loading, setLoading] = useState(true);
 
     const colors = [
@@ -64,18 +64,6 @@ function EulerChart( { data, user }:{ data: { size:number, sets:string[] }[], us
         [data]
     );
 
-    function saveData() {
-        fetch(`/api/postAura`, { method: 'POST', body: JSON.stringify({aura: data, id: user})}).then((res) => {
-            if ( res.ok ) {
-                res.json().then(data => {
-                    console.log(data)
-                })
-            } else {
-                console.log("Request failed")
-            }
-        })
-    }
-
     return (
         <Paper
             id={"venn"}
@@ -97,7 +85,6 @@ function EulerChart( { data, user }:{ data: { size:number, sets:string[] }[], us
 
                 </svg>
             </Center>
-            <Button onClick={() => saveData()}>Save</Button>
         </Paper>
     );
 }

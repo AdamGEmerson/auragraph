@@ -15,18 +15,21 @@ export interface Database {
           created_at: string | null
           last_updated: string
           aura_data: Json
+          top_artists: Json
         }
         Insert: {
           id: string
           created_at?: string | null
           last_updated?: string
           aura_data: Json
+          top_artists: Json
         }
         Update: {
           id?: string
           created_at?: string | null
           last_updated?: string
           aura_data?: Json
+          top_artists?: Json
         }
       }
       Authentication: {

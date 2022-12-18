@@ -5,17 +5,24 @@ import {
 } from "@mantine/core"
 import React, { useEffect, useState } from "react";
 import { Overpass } from "@next/font/google";
-import {IconCirclesRelation, IconEye, IconEyeOff, IconInfoCircle, IconQuestionMark} from "@tabler/icons";
+import {
+    IconBrandSpotify,
+    IconCirclesRelation,
+    IconEye,
+    IconEyeOff,
+    IconInfoCircle,
+    IconQuestionMark
+} from "@tabler/icons";
 import {createClient, User} from '@supabase/supabase-js'
 import SingleArtistResponse = SpotifyApi.SingleArtistResponse;
 import {GetServerSideProps, GetServerSidePropsContext} from "next";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import SpotifyWebApi from "spotify-web-api-node";
 import {useSupabaseClient, useUser} from "@supabase/auth-helpers-react";
-import ArtistCard from "../../components/ArtistCard";
-import EulerChart from "../../components/EulerChart";
+import ArtistCard from "../components/ArtistCard";
+import EulerChart from "../components/EulerChart";
 import topographyBackground from "../../public/topography.svg";
-import {Database, Json} from "../../types/supabase";
+import {Database, Json} from "../types/supabase";
 
 type Data = {
     artist?: SingleArtistResponse;
@@ -49,32 +56,24 @@ export const getServerSideProps = async ( context : GetServerSidePropsContext ) 
         publicRuntimeConfig.databasePublicAnon
     );
 
-    // Check if we have a session
-    const {
-        data: {session},
-    } = await supabaseClient.auth.getSession()
-
-    if (session) {
-        const {user} = session;
-        const userData = await supabase.from('Auragraph').select().eq('id', user.id);
-        if (userData.error || userData.data.length === 0) {
-            return {
-                props: {
-                    preload: false,
-                    auraData: null,
-                    artists: null,
-                    user: user,
-                }
+    const userData = await supabase.from('Auragraph').select().eq('id', '7cf9e37d-39c6-4d3c-9c23-36876c144c04');
+    if (userData.error || userData.data.length === 0) {
+        return {
+            props: {
+                preload: false,
+                auraData: null,
+                artists: null,
+                userID: null,
             }
-        } else {
-            console.log("Preload time!")
-            return {
-                props: {
-                    preload: true,
-                    auraData: userData.data[0].aura_data,
-                    artists: userData.data[0].top_artists,
-                    user: user
-                }
+        }
+    } else {
+        console.log("Preload time!")
+        return {
+            props: {
+                preload: true,
+                auraData: userData.data[0].aura_data,
+                artists: userData.data[0].top_artists,
+                userID: '7cf9e37d-39c6-4d3c-9c23-36876c144c04'
             }
         }
     }
@@ -117,9 +116,9 @@ export const getServerSideProps = async ( context : GetServerSidePropsContext ) 
     // }
 }
 
-export default function Auragraph( { preload, auraData, artists, user }:{
+export default function AuragraphDemo( { preload, auraData, artists, userID }:{
     preload: boolean
-    user: User;
+    userID: string;
     artists: {items: Artist[]} | null;
     auraData: { size:number, sets:string[] }[] | null;
     dataSet: { size:number, sets:string[] }[]; }) {
@@ -168,23 +167,25 @@ export default function Auragraph( { preload, auraData, artists, user }:{
 
     // Finally, let's save the built data to the db for next time.
     useEffect(() => {
-        fetch(`/api/postAura`, {
-            method: 'POST',
-            body: JSON.stringify({
-                aura: rawData,
-                id: user.id,
-                topArtists: topArtists,
-                genres: genres,
-            })
-        }).then((res) => {
-            if ( res.ok ) {
-                res.json().then(data => {
-                    console.log(data)
+        if (!preload) {
+            fetch(`/api/postAura`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    aura: rawData,
+                    id: userID,
+                    topArtists: topArtists,
+                    genres: genres,
                 })
-            } else {
-                console.log("Request failed")
-            }
-        })
+            }).then((res) => {
+                if ( res.ok ) {
+                    res.json().then(data => {
+                        console.log(data)
+                    })
+                } else {
+                    console.log("Request failed")
+                }
+            })
+        }
     }, [genres]);
 
     async function buildDataset() {
@@ -256,7 +257,7 @@ export default function Auragraph( { preload, auraData, artists, user }:{
     }
 
     function saveData() {
-        fetch(`/api/postAura`, { method: 'POST', body: JSON.stringify({aura: currentDataSet, id: user.id, topArtists: topArtists})}).then((res) => {
+        fetch(`/api/postAura`, { method: 'POST', body: JSON.stringify({aura: currentDataSet, id: userID, topArtists: topArtists})}).then((res) => {
             if ( res.ok ) {
                 res.json().then(data => {
                     console.log(data)
@@ -320,8 +321,8 @@ export default function Auragraph( { preload, auraData, artists, user }:{
                         </HoverCard.Dropdown>
                     </HoverCard>
                 </Group>
-                <Text weight={700} size={'xl'} mx={"md"} mb={"md"}>Powered by Spotify</Text>
-                <Text weight={700} size={'xl'} mx={"md"}>{user.user_metadata.name}</Text>
+                <Text weight={700} size={'xl'} mx={"md"} mb={"md"} color={'dimmed'}>Powered by Spotify <IconBrandSpotify/></Text>
+                <Text weight={700} size={'xl'} mx={"md"}>Demo User</Text>
                 <Paper p={'md'} my={'md'} sx={(theme) => ({
                     backgroundColor: "transparent",
                 })}>

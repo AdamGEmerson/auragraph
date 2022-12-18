@@ -11,19 +11,6 @@ function Home() {
     const supabaseClient = useSupabaseClient();
     const user = useUser();
 
-    async function getAura(userID: string) {
-        fetch(`/api/aura/${userID}`, { method: 'GET'}).then((res) => {
-            if ( res.ok ) {
-                res.json().then(data => {
-                    console.log(data)
-                })
-            } else {
-                console.log("Request failed")
-            }
-        })
-    }
-
-
     if (user) {
         return (
             <>
@@ -38,7 +25,6 @@ function Home() {
                 })}>
                     <HomeLinks/>
                 </Paper>
-                <Button onClick={() => getAura(user?.id)}/>
             </>
         );
 }}

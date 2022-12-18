@@ -91,12 +91,8 @@ export default function App(props: AppProps) {
                 /** Put your mantine theme override here */
                 colorScheme: 'dark',
                 fontFamily: overpass.style.fontFamily,
-                primaryColor: 'green',
-                defaultGradient: {
-                    from: 'green',
-                    to: 'teal',
-                    deg: 20,
-                },
+                primaryColor: 'teal',
+                defaultGradient: {from: theme.colors.teal[5], to:theme.colors.yellow[3], deg:10},
                 headings: {
                     sizes: {
                         h1: {fontSize: "80px"},
