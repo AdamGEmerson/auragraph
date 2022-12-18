@@ -1,5 +1,10 @@
 ## Auragraph
 
+### Demo @ [Auragraph.io](https://auragraph.io)
+
+### Authors
+- [adamgemerson]('https://github.com/adamgemerson)
+
 ### What is Auragraph?
 
 > __Auragraph__ is a web application for Spotify users designed by a music enthusiast, for music enthusiasts. 
@@ -33,7 +38,7 @@ Home Page
 Your Auragraph
 
 ![Graph Closeup](/readmeImages/graphCloseUp.png)
-Your Auragraph
+Graph Closeup
 
 ![Explore](/readmeImages/explorePage.png)
 Explore
@@ -43,17 +48,30 @@ Artist
 
 
 ### Supabase Integration
-Auragraph uses 
+>Auragraph leverages the **Supabase Auth** Spotify provider to connect with spotify and authenticate users.
+>
+>Once a graph has been generated, the data is stored using **Supabase Database**. This allows us to reduce load times and api calls after the first visit. The graph is loaded from the database with SSR, and if that fails, API calls are made client side.
+> 
+>Due to the Spotify Developer restriction requiring that I manually approve users before they can authenticate with OAuth I have also set up a "request access" contact form which is being stored in a Supabase table as well.
+>
 
-Auragraph was built with [Supabase](https://supabase.com), [Next.js](https://nextjs.org/), [Mantine](https://mantine.dev), and the [Spotify API](https://developer.spotify.com/).
+![Auth](/readmeImages/authentication.png)
+Auth
 
-### Team
-- [adamgemerson]('https://github.com/adamgemerson)
+![Database](/readmeImages/auragraphTable.png)
+Database
 
-### Supabase Implementation
 
-Auragraph leverages the Authentication and Database services provided by Supabase. 
 
-### Demo
-Live Demo @ [Auragraph.io](https://auragraph.io)
+### Thanks
+ Thanks to all the devs who contributed to these amazing open source packages: 
+ - [Supabase](https://supabase.com) 
+ - [Next.js](https://nextjs.org/) 
+ - [Mantine](https://mantine.dev)
+ - [Spotify Web API Node](https://github.com/thelinmichael/spotify-web-api-node)
+ - [benfred/venn.js](https://github.com/benfred/venn.js/)
+ - [upset/venn.js](https://upset.js.org/venn.js/)
+ - [D3](https://github.com/d3/d3)
+
+
 
