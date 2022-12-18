@@ -1,34 +1,59 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Auragraph
 
-## Getting Started
+### What is Auragraph?
 
-First, run the development server:
+> __Auragraph__ is a web application for Spotify users designed by a music enthusiast, for music enthusiasts. 
+>
+> 
+>Auragraph aims to help users visualize the relationships between their favorite artists by generating colorful, interactive euler diagrams that we call, you guessed it, auragraphs.
+>
+> Spotify recognizes over 5000 unique genres of music. That's a lot to wade through! We hope that auragraph will enable people to better understand musical taxonomy while enabling the exploration and discovery of new sounds.
+### How Does It Work?
+>Once you have logged in with your Spotify account (thanks Supabase!), your favorite artists are retrieved via the Spotify API. With your favorite artists in hand, we can get to work on generating your very own auragraph.
+> 
+>Spotify assigns each artist any number of genres, but for our purposes we only care about the genres where your favorite artists overlap. If we didn't cull the dataset your graph would be full of disjoint outliers. Lame!
+> 
+>After we have removed any outlying genres, the euler diagram is generated with [D3](https://d3js.org/) and [venn.js](https://upset.js.org/venn.js/).
+> 
+>Depending on how diverse your listening habits are, your auragraph might be quite dense and difficult to parse, but you can explore the chart by toggling genres with the button above your graph.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### Observations On The Graph
+> - The genres most represented amongst your top artists will be the drawn largest.
+> - Toggle genres off and on to find new relationships in your graph.
+> - Most graphs will have one or two central genres, like "Pop", or "Rap". 
+> - If you turn the central genres off, your graph will become disjoint!.
+> - Some genres will be represented as complete subsets of others. "Art Pop" and "Hyper Pop" for example. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Screenshots
 
-You can start editing the page by modifying `pages/auragraph.tsx`. The page auto-updates as you edit the file.
+![Home Page](/readmeImages/homePage.png)
+Home Page
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+![Your Auragraph](/readmeImages/yourAuragraph.png)
+Your Auragraph
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+![Graph Closeup](/readmeImages/graphCloseUp.png)
+Your Auragraph
 
-## Learn More
+![Explore](/readmeImages/explorePage.png)
+Explore
 
-To learn more about Next.js, take a look at the following resources:
+![Artist](/readmeImages/artistPage.png)
+Artist
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Supabase Integration
+Auragraph uses 
 
-## Deploy on Vercel
+Auragraph was built with [Supabase](https://supabase.com), [Next.js](https://nextjs.org/), [Mantine](https://mantine.dev), and the [Spotify API](https://developer.spotify.com/).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Team
+- [adamgemerson]('https://github.com/adamgemerson)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Supabase Implementation
+
+Auragraph leverages the Authentication and Database services provided by Supabase. 
+
+### Demo
+Live Demo @ [Auragraph.io](https://auragraph.io)
+
