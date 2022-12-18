@@ -5,22 +5,15 @@ import getConfig from "next/config";
 import {createServerSupabaseClient} from "@supabase/auth-helpers-nextjs";
 import SpotifyWebApi from "spotify-web-api-node";
 import {
-    ActionIcon,
-    Avatar,
-    Badge,
-    Button,
-    Center,
-    Group,
-    HoverCard, Loader, Paper,
+    ActionIcon, Avatar, Badge, Button, Center,
+    Group, HoverCard, Paper,
     Stack,
     Text,
-    ThemeIcon,
     Title,
     Tooltip, useMantineTheme
 } from "@mantine/core";
-import {IconBrandSpotify, IconCirclesRelation, IconEye, IconEyeOff, IconInfoCircle} from "@tabler/icons";
+import {IconBrandSpotify, IconInfoCircle} from "@tabler/icons";
 import React from "react";
-import EulerChart from "../../../components/EulerChart";
 
 export const getServerSideProps = async (context : GetServerSidePropsContext ) => {
     const { serverRuntimeConfig } = getConfig();
