@@ -17,7 +17,7 @@ function SignInOutButton() {
             provider: 'spotify',
             options: {
                 scopes: 'playlist-read-private user-read-private user-top-read',
-                redirectTo: `${window.location.origin}/authenticated/home`
+                redirectTo: `/authenticated/home`
             }
         })
     }
