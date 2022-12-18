@@ -12,9 +12,9 @@ import { GetServerSideProps } from "next";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import SpotifyWebApi from "spotify-web-api-node";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import ArtistCard from "../components/ArtistCard";
-import EulerChart from "../components/EulerChart";
-import topographyBackground from "../public/topography.svg";
+import ArtistCard from "../../components/ArtistCard";
+import EulerChart from "../../components/EulerChart";
+import topographyBackground from "../../public/topography.svg";
 import {useInputState} from "@mantine/hooks";
 
 type Data = {

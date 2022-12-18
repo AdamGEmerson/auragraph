@@ -1,12 +1,14 @@
 import {ReactElement, useState} from "react";
 import {useD3} from "../hooks/useD3";
 import {VennDiagram, sortAreas} from "@upsetjs/venn.js";
-import {Container, Loader, Box, Paper, Center, Group} from "@mantine/core";
+import {Container, Loader, Box, Paper, Center, Group, Button} from "@mantine/core";
 import * as d3 from 'd3';
+import {useUser} from "@supabase/auth-helpers-react";
 
 
-function EulerChart( { data }:{ data: { size:number, sets:string[] }[]} ) {
+function EulerChart( { data, user }:{ data: { size:number, sets:string[] }[], user: string} ) {
     const [loading, setLoading] = useState(true);
+
     const colors = [
         "#FF6B6B", "#F06595", "#CC5DE8", "#845EF7",
         "#5C7CFA", "#339AF0", "#22B8CF", "#20C997",
@@ -62,6 +64,18 @@ function EulerChart( { data }:{ data: { size:number, sets:string[] }[]} ) {
         [data]
     );
 
+    function saveData() {
+        fetch(`/api/postAura`, { method: 'POST', body: JSON.stringify({aura: data, id: user})}).then((res) => {
+            if ( res.ok ) {
+                res.json().then(data => {
+                    console.log(data)
+                })
+            } else {
+                console.log("Request failed")
+            }
+        })
+    }
+
     return (
         <Paper
             id={"venn"}
@@ -83,6 +97,7 @@ function EulerChart( { data }:{ data: { size:number, sets:string[] }[]} ) {
 
                 </svg>
             </Center>
+            <Button onClick={() => saveData()}>Save</Button>
         </Paper>
     );
 }

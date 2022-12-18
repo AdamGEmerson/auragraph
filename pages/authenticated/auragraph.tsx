@@ -12,9 +12,9 @@ import { GetServerSideProps } from "next";
 import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import SpotifyWebApi from "spotify-web-api-node";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import ArtistCard from "../components/ArtistCard";
-import EulerChart from "../components/EulerChart";
-import topographyBackground from "../public/topography.svg";
+import ArtistCard from "../../components/ArtistCard";
+import EulerChart from "../../components/EulerChart";
+import topographyBackground from "../../public/topography.svg";
 
 type Data = {
     artist?: SingleArtistResponse;
@@ -40,10 +40,9 @@ type Artist = {
     genres: string[],
 }
 
-export const getServerSideProps: GetServerSideProps<{ user: User | null }> = async (context) => {
+export const getServerSideProps: GetServerSideProps<{ user:User, response:Response | null }> = async (context) => {
     const { serverRuntimeConfig } = getConfig();
     const supabase = createServerSupabaseClient(context);
-
     async function fetchAndBuildTopArtists(spotifyApi: SpotifyWebApi) {
         const response = await spotifyApi.getMyTopArtists();
         const payload = JSON.parse(JSON.stringify(response.body));
@@ -101,11 +100,12 @@ export const getServerSideProps: GetServerSideProps<{ user: User | null }> = asy
         data: {session},
     } = await supabase.auth.getSession()
 
+    console.log("Session Found")
+
     if (session) {
-        console.log("Session Found")
         const {provider_token, provider_refresh_token, user} = session
 
-        if (provider_token && provider_refresh_token) {
+        if (provider_token && provider_refresh_token && user) {
 
             console.log("Access token found, attempting to fetch Top Artists...")
 
@@ -134,18 +134,9 @@ export const getServerSideProps: GetServerSideProps<{ user: User | null }> = asy
                 const {response, dataSet, genres} = await fetchAndBuildTopArtists(spotifyApi);
                 return {props: {user, response, dataSet, genres}}
             }
-        } else {
-            console.log("No provider token")
-            return {
-                redirect: { destination: `${window.location.origin}/`, permanent: false},
-            }
         }
-    }
-    return {
-        redirect: {
-            destination: `${window.location.origin}/`,
-            permanent: false,
-        },
+    } else {
+        return { props: {} }
     }
 }
 
@@ -203,8 +194,32 @@ export default function Auragraph( { user, response, dataSet, genres }:{
         <>
             <Group>
                 <ThemeIcon size={64} variant={'light'} radius={'xl'} color='teal'><IconCirclesRelation size={48}/></ThemeIcon>
-                <Title order={1} color={theme.fn.rgba(theme.colors.teal[7], .8)} my={'md'}>Your Auragraph</Title>
+                <Title order={1} color={theme.fn.rgba(theme.colors.teal[7], .8)} >Your Auragraph</Title>
+                <HoverCard width={360} shadow="md">
+                    <HoverCard.Target>
+                        <ActionIcon size={'lg'} color={'green'} variant={"subtle"} radius={'xl'}
+                                    sx={{'&:hover': {cursor: 'default'}}}>
+                            <IconInfoCircle/>
+                        </ActionIcon>
+                    </HoverCard.Target>
+                    <HoverCard.Dropdown>
+                        <Title order={4}>About Auragraphs</Title>
+                        <Text size="sm" mt={'xs'}>
+                            Auragraphs are an attempt to visualize the relationship between your favorite artists
+                            and their music.
+                        </Text>
+                        <Text size="sm" mt={'xs'}>
+                            Your auragraph is a mapping of your top 20 artists and their genres (according to
+                            spotify).
+                        </Text>
+
+                        <Text size="sm" mt={'xs'}>
+                            Click the genre buttons above the graph to explore!
+                        </Text>
+                    </HoverCard.Dropdown>
+                </HoverCard>
             </Group>
+            <Text weight={700} size={'xl'} mx={"md"} mb={"md"}>Powered by Spotify</Text>
             <Text weight={700} size={'xl'} mx={"md"}>{user.user_metadata.name}</Text>
             <Paper p={'md'} my={'md'} sx={(theme) => ({
                     backgroundColor: "transparent",
@@ -228,7 +243,7 @@ export default function Auragraph( { user, response, dataSet, genres }:{
                     ))
                     : ''}
                 </Group>
-                { currentDataSet ? <EulerChart data={currentDataSet}/> : ''}
+                { currentDataSet ? <EulerChart data={currentDataSet} user={user.id}/> : ''}
             </Paper>
             <Divider my={"md"}></Divider>
             <Title sx={{fontFamily: overpass.style.fontFamily}} color={'teal'} order={2}>Your Artists</Title>

@@ -46,9 +46,9 @@ function MainLink({ icon, color, label, page}: MainLinkProps) {
 }
 
 const data = [
-    { icon: <IconHome size={18} />, color: 'green', label: 'Home', page: 'home' },
-    { icon: <IconCirclesRelation size={18} />, color: 'green', label: 'Your Auragraph', page: 'auragraph' },
-    { icon: <IconCompass size={18} />, color: 'green', label: 'Explore', page: 'explore' },
+    { icon: <IconHome size={18} />, color: 'green', label: 'Home', page: 'authenticated/home' },
+    { icon: <IconCirclesRelation size={18} />, color: 'green', label: 'Your Auragraph', page: 'authenticated/auragraph' },
+    { icon: <IconCompass size={18} />, color: 'green', label: 'Explore', page: 'authenticated/explore' },
     { icon: <IconQuestionMark size={18} />, color: 'green', label: 'About', page: 'about' }
 ];
 

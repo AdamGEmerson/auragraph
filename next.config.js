@@ -8,8 +8,8 @@ const nextConfig = {
     clientId: process.env.CLIENT_ID,
   },
   publicRuntimeConfig: {
-    databaseApiUrl: process.env.DATABASE_API_URL,
-    databasePublicAnon: process.env.DATABASE_PUBLIC_ANON_KEY
+    databaseApiUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    databasePublicAnon: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   },
 
   images: {
