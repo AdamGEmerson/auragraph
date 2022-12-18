@@ -73,13 +73,14 @@ const LoginPage = () => {
             provider: 'spotify',
             options: {
                 scopes: 'playlist-read-private user-read-private user-top-read',
-                redirectTo: `${window.location.origin}/authenticated/home`,
+                redirectTo: `${window.location.origin}/home`,
             }
         })
     }
 
     async function formSubmit( formData: {firstName: string, lastName: string, email: string} ) {
         setFormLoading(true)
+        form.clearErrors;
         fetch(`/api/postAccessRequest`, { method: 'POST', body: JSON.stringify(formData)}).then((res) => {
             if ( res.ok ) {
                 res.json().then(data => {
@@ -88,6 +89,7 @@ const LoginPage = () => {
                 })
             } else {
                 console.log("Request failed")
+                setFormLoading(false)
                 showNotification({ color: 'red', icon:<IconAlertTriangle/>, title: 'Error', message: "There was an issue with your request. Please try again in a few minutes."})
 
             }
@@ -134,7 +136,6 @@ const LoginPage = () => {
                             <Title order={4}>Request access below, and while you wait, check out our demo.</Title>
                         </Grid.Col>
                         <Grid.Col span={12}><Text>Please be sure to include the email associated with your spotify account.</Text></Grid.Col>
-
                             <Grid.Col span={6}>
                                 <TextInput withAsterisk size={smallScreen ? 'lg' : 'md'} placeholder={'First Name'} radius={'lg'} {...form.getInputProps('firstName')}></TextInput>
                             </Grid.Col>
@@ -145,7 +146,7 @@ const LoginPage = () => {
                                 <TextInput withAsterisk size={smallScreen ? 'lg' : 'md'} placeholder={'Your Spotify Account Email'} radius={'lg'} {...form.getInputProps('email')}></TextInput>
                             </Grid.Col>
                             <Grid.Col span={4}>
-                                <Button variant={"gradient"} size={smallScreen ? 'lg' : 'md'} radius={'lg'} type={'submit'}>Request Access</Button>
+                                <Button variant={"gradient"} size={smallScreen ? 'lg' : 'md'} radius={'lg'} type={'submit'} onClick={() => setFormLoading(true)} loading={formLoading && !form.errors}>Request Access</Button>
                             </Grid.Col>
                     </Grid>
                     </form>
@@ -153,14 +154,7 @@ const LoginPage = () => {
                 <Center>
                     <Button component={'a'} href={"/demo"} leftIcon={<IconTestPipe/>} px='md' radius={'lg'} sx={{height: "100px", width: "200px"}} size={'xl'} my={"xl"}>Try The Demo</Button>
                 </Center>
-
-                {/*<Group position={'center'}>*/}
-                {/*    <Button size={'lg'} radius={'lg'} my={'md'} variant={"gradient"} leftIcon={<IconBrandSpotify />} onClick={() => signInWithSpotify()}>Sign In</Button>*/}
-                {/*</Group>*/}
             </Stack>
-
-
-
         </>
     )
 }
