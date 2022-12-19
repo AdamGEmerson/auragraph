@@ -91,7 +91,7 @@ export default function App(props: AppProps) {
                 property="og:description"
                 content="Your music tastes, visualized."
             />
-            <meta property="og:image" content={previewImage.src} />
+            <meta property="og:image" content={'https://raw.githubusercontent.com/AdamGEmerson/auragraph/main/public/auragraphPreview.png'} />
         </Head>
         <main className={overpass.className}>
         <MantineProvider
