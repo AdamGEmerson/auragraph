@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
 
     // Auth condition not met, redirect to home page.
     const redirectUrl = req.nextUrl.clone()
-    redirectUrl.pathname = '/'
+    redirectUrl.pathname = '/unauthorized'
     redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)
 }

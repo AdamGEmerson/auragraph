@@ -29,14 +29,24 @@ import {GridLineOptions} from "chart.js";
 import {useForm} from "@mantine/form";
 import {showNotification} from "@mantine/notifications";
 
-export const getServerSideProps = async (context: any ) =>  {
-    return {
-            redirect: {
-                destination: '/home',
-                permanent: false,
-            }, props: {},
-        }
-}
+// export const getServerSideProps = async (context: any ) =>  {
+//     const supabase = createServerSupabaseClient(context);
+//     const {
+//         data: { session },
+//     } = await supabase.auth.getSession()
+//
+//     if (session) {
+//         console.log(session)
+//         return {
+//             redirect: {
+//                 destination: '/',
+//                 permanent: false,
+//             }, props: {},
+//         }
+//     } else {
+//         return { props: {} };
+//     }
+// }
 
 const LoginPage = () => {
     const supabaseClient = useSupabaseClient();
