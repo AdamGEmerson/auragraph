@@ -23,6 +23,7 @@ import {createBrowserSupabaseClient} from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import topographyBackground from "../public/topography.svg";
 import SignInOutButton from "../components/SignInOutButton";
+import previewImage from '../public/auragraphPreview.png';
 
 // If loading a variable font, you don't need to specify the font weight
 const overpass = Overpass({
@@ -83,15 +84,14 @@ export default function App(props: AppProps) {
         <Head>
             <title>Auragraph</title>
             <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-            <meta property="og:url" content="auragraph.io" />
+            <meta property="og:url" content="https://auragraph.io" />
             <meta property="og:type" content="website" />
             <meta property="og:title" content={"Auragraph"} />
-            <meta name="twitter:card" content="summary" />
             <meta
                 property="og:description"
                 content="Your music tastes, visualized."
             />
-            <meta property="og:image" content={'../public/auragraphPreview.png'} />
+            <meta property="og:image" content={previewImage.src} />
         </Head>
         <main className={overpass.className}>
         <MantineProvider
