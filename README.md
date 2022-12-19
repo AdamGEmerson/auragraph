@@ -31,7 +31,7 @@
 > - Some genres will be represented as complete subsets of others. "Art Pop" and "Hyper Pop" for example. 
 
 ### What's Next?
->I intend to finish graphs for Artists themselves, that users can view when using the explore feature, but the methodology will have to be different due to the fact that spotify only assigns genres to artists, not to songs or albums.
+>I would like to create a timeline for users to see how their graph has changed over time, leaning on previously stored graphs to build out a narrative experience.
 > 
 >I would also like to push the data visualizaion a bit further, with some more informative tooltips and additional ways to express a users aural proclivities.
 
