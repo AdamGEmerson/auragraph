@@ -61,7 +61,7 @@ function ArtistCard( { artist, genres }: { artist: Artist; genres: {genre: strin
               shadow={hovered ? "xl" : "md"}
               p={"lg"}
               component="a"
-              href={`artists/${artist.id}`}
+              href={`${window.location.origin}/artists/${artist.id}`}
               sx={(theme) => ({
                   backgroundColor: theme.fn.rgba(theme.colors.dark[7], 0.65),
                   //backdropFilter: "blur( 2px )",
@@ -90,7 +90,7 @@ function ArtistCard( { artist, genres }: { artist: Artist; genres: {genre: strin
                                 ))}
                             </Group>
                             <Group position={'apart'}>
-                                <Button component={'a'} href={`artists/${artist.id}`} color={'cyan'} variant={'light'} radius={'lg'} leftIcon={<IconCirclesRelation size={18}/>}>Artist Page</Button>
+                                <Button component={'a'} href={`${window.location.origin}/artists/${artist.id}`} color={'cyan'} variant={'light'} radius={'lg'} leftIcon={<IconCirclesRelation size={18}/>}>Artist Page</Button>
                                 <ActionIcon component={'a'} href={artist.external_urls.spotify} color={'green'} variant={'light'} size={'xl'} radius={'xl'}><IconBrandSpotify/></ActionIcon>
                             </Group>
                         </Stack>
