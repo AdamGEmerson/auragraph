@@ -1,4 +1,12 @@
-import {IconCirclesRelation, IconCompass, IconHome, IconLogin, IconQuestionMark, IconUser} from '@tabler/icons';
+import {
+    IconCirclesRelation,
+    IconCompass,
+    IconHome,
+    IconLogin,
+    IconQuestionMark,
+    IconTestPipe,
+    IconUser
+} from '@tabler/icons';
 import { ThemeIcon, UnstyledButton, Group, Text } from '@mantine/core';
 import React from "react";
 import Link from 'next/link';
@@ -56,7 +64,8 @@ const data = [
     { icon: <IconHome size={18} />, color: 'green', label: 'Home', page: 'home' },
     { icon: <IconCirclesRelation size={18} />, color: 'green', label: 'Your Auragraph', page: 'authenticated/auragraph' },
     { icon: <IconCompass size={18} />, color: 'green', label: 'Explore', page: 'explore' },
-    { icon: <IconQuestionMark size={18} />, color: 'green', label: 'About', page: 'about' }
+    { icon: <IconQuestionMark size={18} />, color: 'green', label: 'About', page: 'about' },
+    { icon: <IconTestPipe size={18} />, color: 'green', label: 'Demo', page: 'demo' }
 ];
 
 export function MainLinks( { setOpenBurger }: { setOpenBurger: any} ) {
