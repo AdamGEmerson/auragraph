@@ -30,7 +30,7 @@ function HomeLink({ icon, label, color, description, page}: HomeLinkProps) {
     }
 
     return (
-        <Link href={`/${page}`} style={{textDecoration: 'none'}}>
+        <Link href={`${window.location.origin}/${page}`} style={{textDecoration: 'none'}}>
             <Card radius={"xl"}
                   shadow={hovered ? "xl" : "md"}
                   p={"lg"}

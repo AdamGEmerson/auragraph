@@ -21,7 +21,7 @@ function MainLink({ icon, color, label, page, setOpenBurger}: MainLinkProps) {
     }
 
     return (
-        <Link href={`/${page}`} style={{textDecoration: 'none'}}>
+        <Link href={`${window.location.origin}/${page}`} style={{textDecoration: 'none'}}>
             <UnstyledButton
                 onClick={ () => loadPage(page) }
                 sx={(theme) => ({
