@@ -28,31 +28,34 @@ function HomeLink({ icon, label, color, description, page}: HomeLinkProps) {
     function loadPage( page:string ) {
 
     }
-
-    return (
-        <Link href={`${window.location.origin}/${page}`} style={{textDecoration: 'none'}}>
-            <Card radius={"xl"}
-                  shadow={hovered ? "xl" : "md"}
-                  p={"lg"}
-                  sx={(theme) => ({
-                      minHeight: "280px",
-                      backgroundColor: theme.fn.rgba(theme.colors.dark[4], 0.35),
-                      backdropFilter: "blur( 2px )",
-                      '&:hover': {
-                          color:  theme.fn.rgba(color, .7),
-                          boxShadow: `0 8px 32px 0 ${theme.fn.rgba(color, 0.25)}`,
-                          cursor: 'pointer'
-                      }
-                  })}
-                  withBorder>
-                <Stack>
-                    {icon}
-                    <Title order={2}>{label}</Title>
-                    <Text sx={{fontSize: "18px"}} color={theme.colors.dark[0]} my={"md"}>{description}</Text>
-                </Stack>
-            </Card>
-        </Link>
-    );
+    if (typeof window != "undefined") {
+        return (
+            <Link href={`${window.location.origin}/${page}`} style={{textDecoration: 'none'}}>
+                <Card radius={"xl"}
+                      shadow={hovered ? "xl" : "md"}
+                      p={"lg"}
+                      sx={(theme) => ({
+                          minHeight: "280px",
+                          backgroundColor: theme.fn.rgba(theme.colors.dark[4], 0.35),
+                          backdropFilter: "blur( 2px )",
+                          '&:hover': {
+                              color: theme.fn.rgba(color, .7),
+                              boxShadow: `0 8px 32px 0 ${theme.fn.rgba(color, 0.25)}`,
+                              cursor: 'pointer'
+                          }
+                      })}
+                      withBorder>
+                    <Stack>
+                        {icon}
+                        <Title order={2}>{label}</Title>
+                        <Text sx={{fontSize: "18px"}} color={theme.colors.dark[0]} my={"md"}>{description}</Text>
+                    </Stack>
+                </Card>
+            </Link>
+        );
+    } else {
+        return <></>
+    }
 }
 
 const data = (theme: MantineTheme) => {
