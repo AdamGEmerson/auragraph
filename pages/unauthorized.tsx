@@ -133,7 +133,7 @@ const LoginPage = () => {
                     <form onSubmit={form.onSubmit((values) => formSubmit(values))}>
                     <Grid px={'md'}>
                         <Grid.Col span={12}>
-                            <Title order={2}>Request access to your personal auragraph below, and while you wait, check out <Text component={'a'} href={'/demo'} sx={{'&:hover': {textDecoration: "underline"}}} span c="teal" inherit>our demo.</Text></Title>
+                            <Title order={2}>Request access to your personal auragraph below, and while you wait, check out <Text component={'a'} href={'/demo'} sx={{'&:hover': {textDecoration: "underline"}}} span c="teal" inherit>our demo,</Text> or <Text component={'a'} href={'/explore'} sx={{'&:hover': {textDecoration: "underline"}}} span c="cyan" inherit>Explore.</Text></Title>
                         </Grid.Col>
                         <Grid.Col span={12}><Text>Please be sure to include the email associated with your spotify account.</Text></Grid.Col>
                             <Grid.Col span={6}>
