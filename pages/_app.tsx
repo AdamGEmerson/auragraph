@@ -40,12 +40,13 @@ export default function App(props: AppProps) {
     function NavbarContent() {
         return (
             <Navbar p="xs" width={{  sm: 200, lg: 300  }} hiddenBreakpoint={"sm"} hidden={!opened}>
-                <Navbar.Section>{/* Header with logo */}</Navbar.Section>
-                <Navbar.Section grow mt="md"> <MainLinks setOpenBurger={setOpened}/> </Navbar.Section>
-                <Divider />
                 <Navbar.Section py={'10px'}>
                     <SignInOutButton/>
                 </Navbar.Section>
+                <Divider />
+                <Navbar.Section>{/* Header with logo */}</Navbar.Section>
+                <Navbar.Section grow mt="md"> <MainLinks setOpenBurger={setOpened}/> </Navbar.Section>
+
             </Navbar>
         );
     }
@@ -69,7 +70,7 @@ export default function App(props: AppProps) {
                             <IconCirclesRelation/>
                         </ActionIcon>
                         <Title color={"light"} order={2} sx={{fontFamily: overpass.style.fontFamily}}>auragraph</Title>
-                        </Group>
+                    </Group>
                 </div>
             </Header>
         );
@@ -80,8 +81,17 @@ export default function App(props: AppProps) {
           supabaseClient={supabaseClient}
           initialSession={pageProps.initialSession}>
         <Head>
-          <title>Auragraph</title>
-          <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+            <title>Auragraph</title>
+            <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+            <meta property="og:url" content="auragraph.io" />
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content={"Auragraph"} />
+            <meta name="twitter:card" content="summary" />
+            <meta
+                property="og:description"
+                content="Your music tastes, visualized."
+            />
+            <meta property="og:image" content={'../public/auragraphPreview.png'} />
         </Head>
         <main className={overpass.className}>
         <MantineProvider

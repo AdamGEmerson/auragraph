@@ -13,14 +13,14 @@ import {
     ThemeIcon,
     Stack,
     TextInput,
-    SimpleGrid, Grid, MediaQuery
+    SimpleGrid, Grid, MediaQuery, HoverCard, ActionIcon
 } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import {
     IconAlertTriangle,
     IconBrandSpotify,
     IconCheck,
-    IconCirclesRelation,
+    IconCirclesRelation, IconInfoCircle,
     IconLogin, IconMailFast,
     IconTestPipe
 } from "@tabler/icons";
@@ -97,8 +97,7 @@ const LoginPage = () => {
     }
 
     return (
-        <>
-            <Stack>
+            <Container my={"10%"}>
                 <Center>
                     <Card
                         my={'xl'}
@@ -107,52 +106,38 @@ const LoginPage = () => {
                         p={"xl"}
                         sx={(theme) => ({
                             backgroundColor: theme.fn.rgba(theme.colors.dark[4], 0.35),
+                            boxShadow: `0 8px 32px 0 ${theme.fn.rgba(theme.colors.teal[9], 0.25)}`,
                             backdropFilter: "blur( 2px )",
                             width: "80%",
                             transitionProperty: "transform boxShadow",
                             transitionDuration: ".4s",
                             transitionTimingFunction: "ease-in-out",
                             '&:hover': {
-                                boxShadow: `0 8px 32px 0 ${theme.fn.rgba(theme.colors.teal[9], 0.25)}`,
+
                                 cursor: 'pointer',
                                 transform: "rotate(.2deg)"
                             }
                         })}
                         withBorder>
                         {/*color={theme.fn.rgba(theme.colors.teal[4], .8)*/}
-                        <Title order={smallScreen ? 1 : 2} variant={'gradient'} gradient={{from: theme.colors.teal[5], to:theme.colors.yellow[3], deg:60}}>auragraph</Title>
-                        <Text sx={smallScreen ? {fontSize: "30px"} : {fontSize: "20px"}} weight={700} color={theme.colors.dark[2]} >[ ˈôrə-ɡraf ] • <em>noun</em> </Text>
-                        <Divider my={'sm'}/>
-                        <Text sx={smallScreen ? {fontSize: "24px"} : {fontSize: "18px"}} my={"md"} weight={600}>
-                            {`A colorful map of an individual's music taste and the relationship between their favorite artists.`}
-                        </Text>
+                        <Center>
+                        <Group>
+                            <ThemeIcon size={64} variant={'light'} radius={'xl'} color='teal'><IconCirclesRelation
+                                size={48}/></ThemeIcon>
+                            <Stack spacing={'xs'}>
+                                <Group>
+                                    <Title order={1} variant={'gradient'}>auragraph</Title>
+                                </Group>
+                            </Stack>
+                        </Group>
+                        </Center>
+                        <Divider my={'xl'}/>
+                        <Center>
+                            <Title order={2}>Your music tastes, <Text span variant={'gradient'} inherit>visualized.</Text></Title>
+                        </Center>
                     </Card>
                 </Center>
-                <Container sx={{width:'80%'}}>
-                    <Title order={3} mb={'md'} mx={'md'}>auragraph is currently in early access</Title>
-                    <form onSubmit={form.onSubmit((values) => formSubmit(values))}>
-                    <Grid px={'md'}>
-                        <Grid.Col span={12}>
-                            <Title order={2}>Request access to your personal auragraph below, and while you wait, check out <Text component={'a'} href={'/demo'} sx={{'&:hover': {textDecoration: "underline"}}} span c="teal" inherit>our demo.</Text></Title>
-                        </Grid.Col>
-                        <Grid.Col span={12}><Text>Please be sure to include the email associated with your spotify account.</Text></Grid.Col>
-                            <Grid.Col span={6}>
-                                <TextInput withAsterisk size={smallScreen ? 'lg' : 'md'} placeholder={'First Name'} radius={'lg'} {...form.getInputProps('firstName')}></TextInput>
-                            </Grid.Col>
-                            <Grid.Col span={6}>
-                                <TextInput withAsterisk size={smallScreen ? 'lg' : 'md'} placeholder={'Last Name'} radius={'lg'} {...form.getInputProps('lastName')}></TextInput>
-                            </Grid.Col>
-                            <Grid.Col span={12}>
-                                <TextInput withAsterisk size={smallScreen ? 'lg' : 'md'} placeholder={'Your Spotify Account Email'} radius={'lg'} {...form.getInputProps('email')}></TextInput>
-                            </Grid.Col>
-                            <Grid.Col span={4}>
-                                <Button variant={"light"} leftIcon={<IconMailFast/>} size={smallScreen ? 'lg' : 'md'} radius={'lg'} type={'submit'} onClick={() => setFormLoading(true)} loading={formLoading && !form.errors}>Request Access</Button>
-                            </Grid.Col>
-                    </Grid>
-                    </form>
-                </Container>
-            </Stack>
-        </>
+            </Container>
     )
 }
 

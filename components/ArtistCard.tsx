@@ -13,7 +13,7 @@ import {
     Box,
     BackgroundImage,
     Overlay,
-    Tooltip, useMantineTheme, Grid, Center
+    Tooltip, useMantineTheme, Grid, Center, ActionIcon
 } from "@mantine/core";
 import {string} from "prop-types";
 import {IconBrandSpotify, IconCirclesRelation, IconMicrophone} from "@tabler/icons";
@@ -89,9 +89,9 @@ function ArtistCard( { artist, genres }: { artist: Artist; genres: {genre: strin
                                     </Tooltip>
                                 ))}
                             </Group>
-                            <Group>
-                                <Button component={'a'} href={`artists/${artist.id}`} color={'cyan'} variant={'light'} compact radius={'lg'} leftIcon={<IconCirclesRelation size={18}/>}>Artist Page</Button>
-                                <Button component={'a'} href={artist.external_urls.spotify} color={'green'} variant={'light'} compact radius={'lg'} leftIcon={<IconBrandSpotify size={18}/>}>Spotify</Button>
+                            <Group position={'apart'}>
+                                <Button component={'a'} href={`artists/${artist.id}`} color={'cyan'} variant={'light'} radius={'lg'} leftIcon={<IconCirclesRelation size={18}/>}>Artist Page</Button>
+                                <ActionIcon component={'a'} href={artist.external_urls.spotify} color={'green'} variant={'light'} size={'xl'} radius={'xl'}><IconBrandSpotify/></ActionIcon>
                             </Group>
                         </Stack>
                     </Grid.Col>

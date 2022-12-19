@@ -1,4 +1,5 @@
 ## Auragraph
+![Auragraph](/public/auragraphPreview.png)
 
 ### Demo @ [Auragraph.io](https://auragraph.io)
 
