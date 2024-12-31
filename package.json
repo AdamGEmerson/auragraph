@@ -18,6 +18,7 @@
     "@mantine/notifications": "^5.9.5",
     "@next/font": "^13.0.6",
     "@prisma/client": "^4.7.1",
+    "@spotify/web-api-ts-sdk": "^1.2.0",
     "@supabase/auth-helpers-nextjs": "^0.5.2",
     "@supabase/auth-helpers-react": "^0.3.1",
     "@supabase/auth-ui-react": "^0.2.6",
